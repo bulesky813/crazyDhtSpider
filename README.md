@@ -1,17 +1,17 @@
-# phpDhtSpider
+# phpDhtSpider-原作者不知什么原因一直不维护并且代码不完善，根本跑不起来，现在已经修复相关问题，可以正常运行。
 php实现的dht爬虫（分布式）
 
 需要swoole拓展
 
-swoole version 1.9.18
+swoole version 1.9.18+
 
-PHP Version 5.6+
+PHP Version 5.6+ 建议7.2+
 
 #########运行说明##############
 
 **dht_client目录** 为爬虫服务器 **环境要求**
 
-1.php安装swoole拓展 (pecl install swoole 默认安装1.9.18版本)
+1.php安装swoole拓展
 
 2.设置服务器 ulimit -n 100000
 
@@ -25,10 +25,16 @@ PHP Version 5.6+
 
 **dht_server目录** 接受数据服务器(可在同一服务器) **环境要求**
 
-1.php安装swoole拓展 (pecl install swoole 默认安装1.9.18版本)
+1.php安装swoole拓展
 
 2.设置服务器 ulimit -n 100000
 
 3.防火墙开发dht_client请求的对应端口(配置项中)
 
 4.运行 php go.php
+=============================================================
+1、由于一直有报错日志（原因已经找到，但是没有时间修改），但是不建议关闭日志，所以增加一个restart.sh脚本，可以通过
+定时任务进行定时清理日志。目前不影响爬虫效率。
+
+2、注意config.php中的'daemonize'=>false,//是否后台守护进程
+
