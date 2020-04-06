@@ -1,4 +1,4 @@
-# phpDhtSpider-项目地址：https://github.com/cuijun123/phpDhtSpider
+# 本项目是在phpDhtSpider基础上开发：https://github.com/cuijun123/phpDhtSpider
 # 原作者不知什么原因一直不维护并且代码不完善，根本跑不起来，现在已经修复相关问题，并且进行了优化，可以正常运行。
 php实现的dht爬虫（分布式）
 
