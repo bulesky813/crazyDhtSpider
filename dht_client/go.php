@@ -1,6 +1,5 @@
 <?php
 ini_set("memory_limit", "-1");
-//swoole version 1.9.5
 /*
  * 安装swoole pecl install swoole
  * 设置服务器 ulimit -n 100000
