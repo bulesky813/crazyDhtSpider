@@ -1,5 +1,4 @@
 <?php
-ini_set("memory_limit", "-1");
 /*
  * 安装swoole pecl install swoole
  * 设置服务器 ulimit -n 100000
@@ -7,10 +6,9 @@ ini_set("memory_limit", "-1");
  */
 error_reporting(E_ERROR);
 ini_set('date.timezone', 'Asia/Shanghai');
-ini_set("memory_limit", "1024");
+ini_set("memory_limit", "-1");
 define('BASEPATH', dirname(__FILE__));
 $config = require_once BASEPATH . '/config.php';
-//swoole_process::setaffinity(array(0));
 define('MAX_REQUEST', 0);// 允许最大连接数, 不可大于系统ulimit -n的值
 define('AUTO_FIND_TIME', 3000);//定时寻找节点时间间隔 /毫秒
 define('MAX_NODE_SIZE', 500);//保存node_id最大数量

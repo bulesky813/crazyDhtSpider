@@ -1,1 +1,3 @@
 .idea
+dht_client/config.php
+dht_server/config.php
