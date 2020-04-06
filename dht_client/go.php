@@ -99,8 +99,8 @@ $serv->on('Packet', function ($serv, $data, $fdinfo) {
 
 $serv->on('task', function ($server, Swoole\Server\Task $task) {
     global $config;
-    $server_stats = json_encode($server->stats());
-    Func::Logs($server_stats.PHP_EOL,3);
+    //$server_stats = json_encode($server->stats());
+    //Func::Logs($server_stats.PHP_EOL,3);
     if ($server->stats()['tasking_num'] > 0) {
         //echo date('Y-m-d H:i:s').' '.'tasking_num: '.$server->stats()['tasking_num'].PHP_EOL;
         //return false;
