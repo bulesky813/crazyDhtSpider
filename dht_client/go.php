@@ -11,7 +11,7 @@ define('BASEPATH', dirname(__FILE__));
 $config = require_once BASEPATH . '/config.php';
 define('MAX_REQUEST', 0);// 允许最大连接数, 不可大于系统ulimit -n的值
 define('AUTO_FIND_TIME', 3000);//定时寻找节点时间间隔 /毫秒
-define('MAX_NODE_SIZE', 500);//保存node_id最大数量
+define('MAX_NODE_SIZE', 500);//保存node_id最大数量,不要设置太大，否则会导致数组过大内存溢出
 define('BIG_ENDIAN', pack('L', 1) === pack('N', 1));
 
 require_once BASEPATH . '/inc/Node.class.php'; //node_id类
@@ -38,7 +38,7 @@ Func::Logs(date('Y-m-d H:i:s', time()) . " - 服务启动..." . PHP_EOL, 1);//�
 //SWOOLE_SOCK_UDP 创建udp socket
 $serv = new Swoole\Server('0.0.0.0', 6882, SWOOLE_PROCESS, SWOOLE_SOCK_UDP);
 $serv->set(array(
-    'reload_async' => true,
+    'reload_async' => true,//设置为 true 时，将启用异步安全重启特性，Worker 进程会等待异步事件完成后再退出
     'worker_num' => $config['worker_num'],//设置启动的worker进程数
     'daemonize' => $config['daemonize'],//是否后台守护进程
     'max_request' => MAX_REQUEST, //防止 PHP 内存溢出, 一个工作进程处理 X 次任务后自动重启 (注: 0,不自动重启)
@@ -47,7 +47,7 @@ $serv->set(array(
     'max_conn' => 65535,//最大连接数
     'heartbeat_check_interval' => 5, //启用心跳检测，此选项表示每隔多久轮循一次，单位为秒
     'heartbeat_idle_time' => 10, //与heartbeat_check_interval配合使用。表示连接最大允许空闲的时间
-    'task_worker_num' => $config['task_worker_num'],
+    'task_worker_num' => $config['task_worker_num'],//task数量
     'task_max_request' => 0,
     'task_enable_coroutine'=> true
 ));
@@ -97,12 +97,11 @@ $serv->on('Packet', function ($serv, $data, $fdinfo) {
 
 $serv->on('task', function ($server, Swoole\Server\Task $task) {
     global $config;
-    //$server_stats = json_encode($server->stats());
-    //Func::Logs($server_stats.PHP_EOL,3);
+    /*$server_stats = json_encode($server->stats());
+    Func::Logs($server_stats.PHP_EOL,3);
     if ($server->stats()['tasking_num'] > 0) {
-        //echo date('Y-m-d H:i:s').' '.'tasking_num: '.$server->stats()['tasking_num'].PHP_EOL;
-        //return false;
-    }
+        return false;
+    }*/
 
     $ip = $task->data['ip'];
     $port = $task->data['port'];
@@ -117,9 +116,6 @@ $serv->on('task', function ($server, Swoole\Server\Task $task) {
             //echo $ip.':'.$port.' udp send！'.PHP_EOL;
             DhtServer::send_response($rs, array($config['server_ip'], $config['server_port']));
             //echo date('Y-m-d H:i:s').' '. $rs['name'].PHP_EOL;
-        } else {
-            //echo 'false'.date('Y-m-d H:i:s').PHP_EOL;
-            //print_r($rs);
         }
         $client->close(true);
     }
