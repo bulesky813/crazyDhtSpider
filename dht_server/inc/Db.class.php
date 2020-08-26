@@ -117,6 +117,7 @@ class Db
         } else {
             if (self::query($sql)) {
                 return mysqli_insert_id(self::$conn);
+                mysqli_close(self::$conn);
             } else {
                 return false;
             }
@@ -152,6 +153,7 @@ class Db
         $rt = self::query($sql);
         $insert_id = self::insert_id();
         $return = empty($insert_id) ? $rt : $insert_id;
+        mysqli_close(self::$conn);
         return $return;
     }
 
