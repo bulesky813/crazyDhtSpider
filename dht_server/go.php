@@ -17,7 +17,7 @@ require_once BASEPATH . '/inc/Db.class.php';
 Func::Logs(date('Y-m-d H:i:s', time()) . " - 服务启动..." . PHP_EOL, 1);//记录启动日志
 
 swoole_set_process_name("php_dht_server:[master] worker");
-
+Co::set(['hook_flags' => SWOOLE_HOOK_ALL]);
 //SWOOLE_PROCESS 使用进程模式，业务代码在Worker进程中执行
 //SWOOLE_SOCK_UDP 创建udp socket
 $serv = new Swoole\Server('0.0.0.0', 2345, SWOOLE_PROCESS, SWOOLE_SOCK_UDP);

@@ -14,4 +14,5 @@ return array(
     'max_conn'=>65535,//最大连接数
     'heartbeat_check_interval' => 5, //启用心跳检测，此选项表示每隔多久轮循一次，单位为秒
     'heartbeat_idle_time' => 10, //与heartbeat_check_interval配合使用。表示连接最大允许空闲的时间
+    'enable_coroutine' => true
 );
