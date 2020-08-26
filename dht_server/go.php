@@ -68,7 +68,8 @@ $serv->on('Receive', function ($serv, $fd, $from_id, $data) {
                 )
             );
         } else {
-            Db::query("update bt set `hot` = `hot` + 1,`files` = $files where infohash = '$rs[infohash]'");
+            $files=addslashes(json_encode($rs['files'], JSON_UNESCAPED_UNICODE));
+            Db::query("update bt set `hot` = `hot` + 1,`files` = '".$files."' where infohash = '$rs[infohash]'");
         }
     }
     $serv->close($fd, true);
