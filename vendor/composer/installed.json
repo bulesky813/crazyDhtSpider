@@ -1,0 +1,38 @@
+[
+    {
+        "name": "swoole/ide-helper",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/swoole/ide-helper.git",
+            "reference": "feffd70afe9a0ee76b1559021feffbfd6049b157"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/swoole/ide-helper/zipball/feffd70afe9a0ee76b1559021feffbfd6049b157",
+            "reference": "feffd70afe9a0ee76b1559021feffbfd6049b157",
+            "shasum": ""
+        },
+        "require-dev": {
+            "guzzlehttp/guzzle": "~6.5.0",
+            "laminas/laminas-code": "~3.4.0",
+            "squizlabs/php_codesniffer": "~3.5.0",
+            "symfony/filesystem": "~4.0"
+        },
+        "time": "2020-08-24T18:10:47+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Team Swoole",
+                "email": "team@swoole.com"
+            }
+        ],
+        "description": "IDE help files for Swoole."
+    }
+]
