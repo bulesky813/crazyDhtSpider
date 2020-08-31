@@ -173,6 +173,7 @@ class Decode
     private function decode_list()
     {
         $list = array();
+        $result = false;
         $terminated = false;
         $list_offset = $this->offset;
 
@@ -183,6 +184,8 @@ class Decode
             }
 
             $list[] = $this->do_decode();
+            $result = $list;
+            unset($list);
         }
 
         if (!$terminated && $this->get_char() === false)
@@ -190,7 +193,7 @@ class Decode
 
         $this->offset++;
 
-        return $list;
+        return $result;
     }
 
     /**
