@@ -2,21 +2,21 @@
 /*
  * 安装swoole pecl install swoole
  * 设置服务器 ulimit -n 100000
- * 关闭防火墙和后台规则 防止端口不通
+ * 记得放开防火墙6882端口
  */
 error_reporting(E_ERROR);
 ini_set('date.timezone', 'Asia/Shanghai');
 ini_set("memory_limit", "-1");
 define('BASEPATH', dirname(__FILE__));
 $config = require_once BASEPATH . '/config.php';
-define('MAX_REQUEST', 0);// 允许最大连接数, 不可大于系统ulimit -n的值
+define('MAX_REQUEST', 1000000);// worker 进程的最大任务数,根据自己的实际情况设置
 define('AUTO_FIND_TIME', 3000);//定时寻找节点时间间隔 /毫秒
 define('MAX_NODE_SIZE', 500);//保存node_id最大数量,不要设置太大，否则会导致数组过大内存溢出
 define('BIG_ENDIAN', pack('L', 1) === pack('N', 1));
 
-require_once BASEPATH . '/inc/Node.class.php'; //node_id类
-require_once BASEPATH . '/inc/Bencode.class.php';//bencode编码解码类
-require_once BASEPATH . '/inc/Base.class.php';//基础操作类
+require_once BASEPATH . '/inc/Node.class.php';
+require_once BASEPATH . '/inc/Bencode.class.php';
+require_once BASEPATH . '/inc/Base.class.php';
 require_once BASEPATH . '/inc/Func.class.php';
 require_once BASEPATH . '/inc/DhtClient.class.php';
 require_once BASEPATH . '/inc/DhtServer.class.php';
@@ -32,15 +32,19 @@ $bootstrap_nodes = array(
     array('router.utorrent.com', 6881)
 );
 
-Func::Logs(date('Y-m-d H:i:s', time()) . " - 服务启动..." . PHP_EOL, 1);//记录启动日志
+//记录启动日志
+Func::Logs(date('Y-m-d H:i:s', time()) . " - 服务启动..." . PHP_EOL, 1);
+swoole_set_process_name("php_dht_client_worker");
+
+//一键协程HOOK
 Co::set(['hook_flags' => SWOOLE_HOOK_ALL]);
+
 //SWOOLE_PROCESS 使用进程模式，业务代码在Worker进程中执行
 //SWOOLE_SOCK_UDP 创建udp socket
 $serv = new Swoole\Server('0.0.0.0', 6882, SWOOLE_PROCESS, SWOOLE_SOCK_UDP);
 $serv->set($config);
 
 $serv->on('WorkerStart', function ($serv, $worker_id) {
-    global $table, $bootstrap_nodes;
     swoole_timer_tick(AUTO_FIND_TIME, function ($timer_id) {
         global $table, $bootstrap_nodes;
         if (count($table) == 0) {
@@ -58,7 +62,6 @@ $from_id，TCP连接所在的Reactor线程ID
 $data，收到的数据内容，可能是文本或者二进制内容
  */
 $serv->on('Packet', function ($serv, $data, $fdinfo) {
-
     if (strlen($data) == 0) {
         return false;
     }
@@ -89,7 +92,6 @@ $serv->on('task', function ($server, Swoole\Server\Task $task) {
     if ($server->stats()['tasking_num'] > 0) {
         return false;
     }*/
-
     $ip = $task->data['ip'];
     $port = $task->data['port'];
     $infohash = unserialize($task->data['infohash']);
