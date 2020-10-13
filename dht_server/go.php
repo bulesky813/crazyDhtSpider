@@ -56,7 +56,7 @@ $serv->on('Receive', function ($serv, $fd, $from_id, $data) {
             } else {
                 $length = $rs['length'];
             }
-            Db::insert('bt', array(
+            Db::insert('cd_bt_source', array(
                     'name' => $rs['name'],
                     'keywords' => Func::getKeyWords($rs['name']),
                     'infohash' => $rs['infohash'],
@@ -70,15 +70,15 @@ $serv->on('Receive', function ($serv, $fd, $from_id, $data) {
             );
         } else {
             $files = addslashes(json_encode($rs['files'], JSON_UNESCAPED_UNICODE));
-            Db::query("update bt set `hot` = `hot` + 1,`files` = '" . $files . "' where infohash = '$rs[infohash]'");
+            Db::query("update cd_bt_source set `hot` = `hot` + 1,`files` = '" . $files . "' where infohash = '$rs[infohash]'");
         }
     }
     $serv->close($fd, true);
 });
 
-$serv->on('Packet', function ($serv, $fd, $from_id, $data) {
+$serv->on('Packet', function ($serv, $data, $clientInfo) {
     if (strlen($data) == 0) {
-        $serv->close($fd, true);
+        $serv->close(true);
         return false;
     }
     //$fdinfo = $serv->connection_info($fd, $from_id);
@@ -97,7 +97,7 @@ $serv->on('Packet', function ($serv, $fd, $from_id, $data) {
             } else {
                 $length = $rs['length'];
             }
-            Db::insert('bt', array(
+            Db::insert('cd_bt_source', array(
                     'name' => $rs['name'],
                     'keywords' => Func::getKeyWords($rs['name']),
                     'infohash' => $rs['infohash'],
@@ -111,9 +111,9 @@ $serv->on('Packet', function ($serv, $fd, $from_id, $data) {
             );
         } else {
             $files = addslashes(json_encode($rs['files'], JSON_UNESCAPED_UNICODE));
-            Db::query("update bt set `hot` = `hot` + 1,`files` = '" . $files . "' where infohash = '$rs[infohash]'");
+            Db::query("update cd_bt_source set `hot` = `hot` + 1,`files` = '" . $files . "' where infohash = '$rs[infohash]'");
         }
     }
-    $serv->close($fd, true);
+    $serv->close(true);
 });
 $serv->start();
