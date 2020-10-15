@@ -216,7 +216,7 @@ class Metadata
         }
 
         $data = $client->recv(4096, 0);
-        if ($data === false) {
+        if ($data === false || $data==='') {
             return false;
         }
         return $data;

@@ -9,9 +9,9 @@ ini_set('date.timezone', 'Asia/Shanghai');
 ini_set("memory_limit", "-1");
 define('BASEPATH', dirname(__FILE__));
 $config = require_once BASEPATH . '/config.php';
-define('MAX_REQUEST', 1000000);// worker 进程的最大任务数,根据自己的实际情况设置
-define('AUTO_FIND_TIME', 3000);//定时寻找节点时间间隔 /毫秒
-define('MAX_NODE_SIZE', 500);//保存node_id最大数量,不要设置太大，否则会导致数组过大内存溢出
+define('MAX_REQUEST', 0);// worker 进程的最大任务数,根据自己的实际情况设置
+define('AUTO_FIND_TIME', 1000);//定时寻找节点时间间隔 /毫秒
+define('MAX_NODE_SIZE', 1000);//保存node_id最大数量,不要设置太大，否则会导致数组过大内存溢出
 define('BIG_ENDIAN', pack('L', 1) === pack('N', 1));
 
 require_once BASEPATH . '/inc/Node.class.php';
@@ -97,7 +97,8 @@ $serv->on('task', function ($server, Swoole\Server\Task $task) {
     $infohash = unserialize($task->data['infohash']);
     $client = new Swoole\Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
     if (!@$client->connect($ip, $port, 1)) {
-        //echo ("connect failed. Error: {$client->errCode}".PHP_EOL);
+        //echo ("connect failed! '.$ip.':'.$port.'---'.Error: {$client->errCode}".PHP_EOL);
+        @$client->close(true);
     } else {
         //echo 'connent success! '.$ip.':'.$port.PHP_EOL;
         $rs = Metadata::download_metadata($client, $infohash);
