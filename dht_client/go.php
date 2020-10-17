@@ -10,7 +10,7 @@ ini_set("memory_limit", "-1");
 define('BASEPATH', dirname(__FILE__));
 $config = require_once BASEPATH . '/config.php';
 define('MAX_REQUEST', 0);// worker 进程的最大任务数,根据自己的实际情况设置
-define('AUTO_FIND_TIME', 1000);//定时寻找节点时间间隔 /毫秒
+define('AUTO_FIND_TIME', 5000);//定时寻找节点时间间隔 /毫秒
 define('MAX_NODE_SIZE', 1000);//保存node_id最大数量,不要设置太大，否则会导致数组过大内存溢出
 define('BIG_ENDIAN', pack('L', 1) === pack('N', 1));
 
@@ -34,7 +34,7 @@ $bootstrap_nodes = array(
 
 //记录启动日志
 Func::Logs(date('Y-m-d H:i:s', time()) . " - 服务启动..." . PHP_EOL, 1);
-swoole_set_process_name("php_dht_client_worker");
+//swoole_set_process_name("php_dht_client_worker");
 
 //一键协程HOOK
 Co::set(['hook_flags' => SWOOLE_HOOK_ALL]);
@@ -45,6 +45,11 @@ $serv = new Swoole\Server('0.0.0.0', 6882, SWOOLE_PROCESS, SWOOLE_SOCK_UDP);
 $serv->set($config);
 
 $serv->on('WorkerStart', function ($serv, $worker_id) {
+    if($worker_id >= $serv->setting['worker_num']) {
+        swoole_set_process_name("php_dht_client_task_worker");
+    } else {
+        swoole_set_process_name("php_dht_client_event_worker");
+    }
     swoole_timer_tick(AUTO_FIND_TIME, function ($timer_id) {
         global $table, $bootstrap_nodes;
         if (count($table) == 0) {
