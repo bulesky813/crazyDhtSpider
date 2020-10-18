@@ -10,7 +10,7 @@ ini_set("memory_limit", "-1");
 define('BASEPATH', dirname(__FILE__));
 $config = require_once BASEPATH . '/config.php';
 define('MAX_REQUEST', 0);// worker 进程的最大任务数,根据自己的实际情况设置
-define('AUTO_FIND_TIME', 5000);//定时寻找节点时间间隔 /毫秒
+define('AUTO_FIND_TIME', 3000);//定时寻找节点时间间隔 /毫秒
 define('MAX_NODE_SIZE', 1000);//保存node_id最大数量,不要设置太大，否则会导致数组过大内存溢出
 define('BIG_ENDIAN', pack('L', 1) === pack('N', 1));
 
@@ -50,7 +50,7 @@ $serv->on('WorkerStart', function ($serv, $worker_id) {
     } else {
         swoole_set_process_name("php_dht_client_event_worker");
     }
-    swoole_timer_tick(AUTO_FIND_TIME, function ($timer_id) {
+    swoole_timer_tick(AUTO_FIND_TIME, function ($timer_id){
         global $table, $bootstrap_nodes;
         if (count($table) == 0) {
             DhtServer::join_dht($table, $bootstrap_nodes);
@@ -85,12 +85,12 @@ $serv->on('Packet', function ($serv, $data, $fdinfo) {
             DhtClient::request_action($msg, array($fdinfo['address'], $fdinfo['port']));
         }
     } catch (Exception $e) {
-        //var_dump($e->getMessage());
+        var_dump($e->getMessage());
     }
 });
 
 
-$serv->on('task', function ($server, Swoole\Server\Task $task) {
+$serv->on('task', function (Swoole\Server $server, Swoole\Server\Task $task) {
     global $config;
     /*$server_stats = json_encode($server->stats());
     Func::Logs($server_stats.PHP_EOL,3);
@@ -101,7 +101,7 @@ $serv->on('task', function ($server, Swoole\Server\Task $task) {
     $port = $task->data['port'];
     $infohash = unserialize($task->data['infohash']);
     $client = new Swoole\Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
-    if (!@$client->connect($ip, $port, 1)) {
+    if (!@$client->connect($ip, $port, 0.5)) {
         //echo ("connect failed! '.$ip.':'.$port.'---'.Error: {$client->errCode}".PHP_EOL);
         @$client->close(true);
     } else {
