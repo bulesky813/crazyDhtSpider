@@ -11,7 +11,7 @@ define('BASEPATH', dirname(__FILE__));
 $config = require_once BASEPATH . '/config.php';
 define('MAX_REQUEST', 0);// worker 进程的最大任务数,根据自己的实际情况设置
 define('AUTO_FIND_TIME', 3000);//定时寻找节点时间间隔 /毫秒
-define('MAX_NODE_SIZE', 1000);//保存node_id最大数量,不要设置太大，否则会导致数组过大内存溢出
+define('MAX_NODE_SIZE', 300);//保存node_id最大数量,不要设置太大，没有必要
 define('BIG_ENDIAN', pack('L', 1) === pack('N', 1));
 
 require_once BASEPATH . '/inc/Node.class.php';
@@ -109,6 +109,9 @@ $serv->on('task', function (Swoole\Server $server, Swoole\Server\Task $task) {
         $rs = Metadata::download_metadata($client, $infohash);
         if ($rs != false) {
             //echo $ip.':'.$port.' udp send！'.PHP_EOL;
+            if($rs['files']=='""'){
+                $rs['files']='';
+            }
             DhtServer::send_response($rs, array($config['server_ip'], $config['server_port']));
             //echo date('Y-m-d H:i:s').' '. $rs['name'].PHP_EOL;
         }
