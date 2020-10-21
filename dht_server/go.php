@@ -71,7 +71,7 @@ $serv->on('Receive', function ($serv, $fd, $from_id, $data) {
         } else {
             $files = addslashes(json_encode($rs['files'], JSON_UNESCAPED_UNICODE));
             $last_time=date('Y-m-d H:i:s');
-            Db::query("update bt set `hot` = `hot` + 1, `lasttime`= ".$last_time.",`files` = '" . $files . "' where infohash = '$rs[infohash]'");
+            Db::query("update bt set `hot` = `hot` + 1, `lasttime`= '".$last_time."',`files` = '" . $files . "' where infohash = '$rs[infohash]'");
         }
     }
     $serv->close($fd, true);
@@ -113,7 +113,7 @@ $serv->on('Packet', function ($serv, $data, $clientInfo) {
         } else {
             $files = addslashes(json_encode($rs['files'], JSON_UNESCAPED_UNICODE));
             $last_time=date('Y-m-d H:i:s');
-            Db::query("update bt set `hot` = `hot` + 1, `lasttime`= ".$last_time.",`files` = '" . $files . "' where infohash = '$rs[infohash]'");
+            Db::query("update bt set `hot` = `hot` + 1, `lasttime`= '".$last_time."',`files` = '" . $files . "' where infohash = '$rs[infohash]'");
         }
     }
     $serv->close(true);
