@@ -97,7 +97,7 @@ class Metadata
 
         } catch (Exception $e) {
             $client->close(true);
-            return ($e->getMessage());
+            var_dump($e->getMessage());
         }
     }
 
@@ -216,7 +216,7 @@ class Metadata
         }
 
         $data = $client->recv(4096, 0);
-        if ($data === false || $data==='') {
+        if ($data === false) {
             return false;
         }
         return $data;

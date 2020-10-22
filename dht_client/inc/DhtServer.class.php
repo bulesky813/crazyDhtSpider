@@ -1,4 +1,5 @@
 <?php
+
 class DhtServer
 {
     public static function join_dht($table, $bootstrap_nodes)

@@ -16,10 +16,7 @@ class Db
             if (empty(self::$conn))
                 echo "Connect MySql Error!" . PHP_EOL;
             else {
-                $res = mysqli_query(self::$conn, " SET character_set_connection=utf8, character_set_results=utf8, character_set_client=binary, sql_mode='' ");
-                if (!res) {
-                    echo $res . PHP_EOL;
-                }
+                mysqli_query(self::$conn, " SET character_set_connection=utf8, character_set_results=utf8, character_set_client=binary, sql_mode='' ");
             }
         }
     }
@@ -163,7 +160,7 @@ class Db
         //递归过滤防注兿
         $set = self::strsafe($set);
         $ids = array();
-        $where = ($where != '' AND count($where) >= 1) ? implode(" ", $where) . ' AND ' : '';
+        $where = ($where != '' and count($where) >= 1) ? implode(" ", $where) . ' AND ' : '';
 
         foreach ($set as $val) {
             // 去重
