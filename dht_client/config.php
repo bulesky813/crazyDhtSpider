@@ -14,6 +14,6 @@ return array(
     'heartbeat_idle_time' => 10, //与heartbeat_check_interval配合使用。表示连接最大允许空闲的时间
     'task_enable_coroutine' => true,
     'task_max_request' => 0,
-    'enable_coroutine' => true
-
+    'enable_coroutine' => true,
+    'task_time_out'=>5
 );
